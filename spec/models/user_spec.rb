@@ -117,4 +117,40 @@ RSpec.describe User, type: :model do
       expect(@user).to_not be_valid
     end
   end
+
+  describe '.authenticate_with_credentials' do
+
+    it "passes with the correct email and password" do
+      @user = User.create({
+        first_name: "first",
+        last_name: "last",
+        email: "me@email.com",
+        password: "123456",
+        password_confirmation: "123456"
+      })
+      expect(@user.authenticate_with_credentials("  ME@email.CoM  ", "123456")).to be_truthy
+    end
+
+    it "fails with the wrong email" do
+      @user = User.create({
+        first_name: "first",
+        last_name: "last",
+        email: "me@email.com",
+        password: "123456",
+        password_confirmation: "123456"
+      })
+      expect(@user.authenticate_with_credentials("wrong@email.com", "123456")).not_to be_truthy
+    end
+
+    it "fails with the wrong password" do
+      @user = User.create({
+        first_name: "first",
+        last_name: "last",
+        email: "me@email.com",
+        password: "123456",
+        password_confirmation: "123456"
+      })
+      expect(@user.authenticate_with_credentials("me@email.com", "wrong")).not_to be_truthy
+    end
+  end
 end
